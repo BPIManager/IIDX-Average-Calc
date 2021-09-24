@@ -1,6 +1,6 @@
 import fs from "fs";
 const fss = fs.promises;
-let diff:"11"|"12" = "11";
+let diff:"11"|"12" = "12";
 const songRegExp = /\?|\:|\"|\*|\!|\'|\\|\//g;
 
 const nameReplacer = (songName:string,decode:boolean = false)=>{
@@ -10,8 +10,8 @@ const nameReplacer = (songName:string,decode:boolean = false)=>{
   return songName.replace(/_q_/g,"?").replace(/_c_/g,":").replace(/_d_/g,"\"").replace(/_a_/g,"*").replace(/_e_/g,"!").replace(/_qo_/g,"'").replace(/_y_/g,"\\").replace(/_s_/g,"/");
 }
 
-var folder = "D:\\Downloads\\bpi\\t\\";
-var outputDir = ".\\res\\"
+var folder = "D:\\bpis\\ScoresRepo\\IIDX-ScoresRepo\\12\\total\\";
+var outputDir = ".\\res\\" + diff + "\\"
 
 const openFile = async(path:string)=>{
   try{
@@ -24,12 +24,13 @@ const openFile = async(path:string)=>{
 }
 
 const parser = async ()=>{
+  let path = "";
   try{
     const songs:{[key:string]:number[]} = {};
     const files = fs.readdirSync(folder);
     for(let i =0;i < files.length; ++i){
-      const fullPath = folder + files[i];
-      const f = await openFile(fullPath);
+      path = folder + files[i];
+      const f = await openFile(path);
       if(typeof f !== "string") continue;
       const m = JSON.parse(f);
       Object.keys(m).map((item:string)=>{
@@ -42,7 +43,7 @@ const parser = async ()=>{
     }
     return songs;
   }catch(e){
-    console.log(e);
+    console.log(e,path);
     return {};
   }
 }
@@ -56,7 +57,7 @@ const init = async()=>{
     if(songRegExp.test(song)){
       console.log(song);
     }
-    await write(outputDir + diff + "\\" + nameReplacer(song) + ".json",JSON.stringify(rank.sort((a,b)=>b -a)));
+    await write(outputDir + nameReplacer(song) + ".json",JSON.stringify(rank.sort((a,b)=>b -a)));
   })
 }
 
@@ -136,14 +137,17 @@ const songNameRevise11 = (songName:string)=>{
 
 const rs = async ()=>{
   await init();
-  const files = fs.readdirSync(outputDir + diff + "\\");
+  const files = fs.readdirSync(outputDir);
   const wrs = await readWR();
   const maxes = await readMax();
-  let res:{title:string,difficulty:number,wr:number,avg:number,playerSum:number,BPI100:number,BPI90:number,BPI80:number,BPI70:number,BPI60:number,BPI50:number,BPI40:number,BPI30:number,BPI20:number,BPI10:number,max:number}[] = [];
+  let res:{
+    title:string,difficulty:number,wr:number,avg:number,playerSum:number,BPI100:number,BPI90:number,BPI80:number,BPI70:number,BPI60:number,BPI50:number,
+    BPI40:number,BPI30:number,BPI20:number,BPI10:number,max:number
+  }[] = [];
   for(let i =0; i < files.length; ++i){
     const f = files[i];
     let songName = f.replace(".json","");
-    const fullPath = outputDir + diff + "\\" + f;
+    const fullPath = outputDir + f;
     const r = await openFile(fullPath);
     if(diff === "12"){
       songName = songNameRevise12(songName);

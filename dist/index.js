@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
 const fss = fs_1.default.promises;
-let diff = "11";
+let diff = "12";
 const songRegExp = /\?|\:|\"|\*|\!|\'|\\|\//g;
 const nameReplacer = (songName, decode = false) => {
     if (decode === false) {
@@ -13,8 +13,8 @@ const nameReplacer = (songName, decode = false) => {
     }
     return songName.replace(/_q_/g, "?").replace(/_c_/g, ":").replace(/_d_/g, "\"").replace(/_a_/g, "*").replace(/_e_/g, "!").replace(/_qo_/g, "'").replace(/_y_/g, "\\").replace(/_s_/g, "/");
 };
-var folder = "D:\\Downloads\\bpi\\t\\";
-var outputDir = ".\\res\\";
+var folder = "D:\\bpis\\ScoresRepo\\IIDX-ScoresRepo\\12\\total\\";
+var outputDir = ".\\res\\" + diff + "\\";
 const openFile = async (path) => {
     try {
         const buff = await fss.readFile(path, "utf-8");
@@ -25,12 +25,13 @@ const openFile = async (path) => {
     }
 };
 const parser = async () => {
+    let path = "";
     try {
         const songs = {};
         const files = fs_1.default.readdirSync(folder);
         for (let i = 0; i < files.length; ++i) {
-            const fullPath = folder + files[i];
-            const f = await openFile(fullPath);
+            path = folder + files[i];
+            const f = await openFile(path);
             if (typeof f !== "string")
                 continue;
             const m = JSON.parse(f);
@@ -46,7 +47,7 @@ const parser = async () => {
         return songs;
     }
     catch (e) {
-        console.log(e);
+        console.log(e, path);
         return {};
     }
 };
@@ -58,7 +59,7 @@ const init = async () => {
         if (songRegExp.test(song)) {
             console.log(song);
         }
-        await write(outputDir + diff + "\\" + nameReplacer(song) + ".json", JSON.stringify(rank.sort((a, b) => b - a)));
+        await write(outputDir + nameReplacer(song) + ".json", JSON.stringify(rank.sort((a, b) => b - a)));
     });
 };
 const readWR = async () => {
@@ -135,14 +136,14 @@ const songNameRevise11 = (songName) => {
 };
 const rs = async () => {
     await init();
-    const files = fs_1.default.readdirSync(outputDir + diff + "\\");
+    const files = fs_1.default.readdirSync(outputDir);
     const wrs = await readWR();
     const maxes = await readMax();
     let res = [];
     for (let i = 0; i < files.length; ++i) {
         const f = files[i];
         let songName = f.replace(".json", "");
-        const fullPath = outputDir + diff + "\\" + f;
+        const fullPath = outputDir + f;
         const r = await openFile(fullPath);
         if (diff === "12") {
             songName = songNameRevise12(songName);
