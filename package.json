@@ -1,0 +1,26 @@
+{
+  "name": "iidx-kaidenscores",
+  "version": "1.0.0",
+  "description": "BPIM で利用するメタデータを更新するためのリポジトリです。",
+  "main": "index.js",
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "typescript": "^4.4.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BPIManager/IIDX-Average-Calc.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BPIManager/IIDX-Average-Calc/issues"
+  },
+  "homepage": "https://github.com/BPIManager/IIDX-Average-Calc#readme",
+  "devDependencies": {
+    "@types/node": "^17.0.15"
+  }
+}

@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
 const fss = fs_1.default.promises;
-let diff = "12";
+let diff = "11";
 const songRegExp = /\?|\:|\"|\*|\!|\'|\\|\//g;
 const nameReplacer = (songName, decode = false) => {
     if (decode === false) {
@@ -13,7 +13,7 @@ const nameReplacer = (songName, decode = false) => {
     }
     return songName.replace(/_q_/g, "?").replace(/_c_/g, ":").replace(/_d_/g, "\"").replace(/_a_/g, "*").replace(/_e_/g, "!").replace(/_qo_/g, "'").replace(/_y_/g, "\\").replace(/_s_/g, "/");
 };
-var folder = "D:\\bpis\\ScoresRepo\\IIDX-ScoresRepo\\12\\total\\";
+var folder = "D:\\bpis\\ScoresRepo\\IIDX-ScoresRepo\\" + diff + "\\kaiden\\";
 var outputDir = ".\\res\\" + diff + "\\";
 const openFile = async (path) => {
     try {
@@ -174,7 +174,7 @@ const rs = async () => {
         };
         const indexOf = (T) => songName.indexOf(`[${T}]`) > -1;
         const _diff = indexOf("H") ? 3 : indexOf("A") ? 4 : 10;
-        res.push({ title: songName, difficulty: _diff, wr: wrLogic(),
+        res.push({ title: nameReplacer(songName, true), difficulty: _diff, wr: wrLogic(),
             BPI100: mGet(1), BPI90: mGet(2), BPI80: mGet(5), BPI70: mGet(11), BPI60: mGet(23), BPI50: mGet(51),
             BPI40: mGet(113), BPI30: mGet(249), BPI20: mGet(547), BPI10: mGet(1203),
             avg: Math.floor(sum / m.length),
