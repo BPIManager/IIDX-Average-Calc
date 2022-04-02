@@ -10,7 +10,7 @@ const nameReplacer = (songName:string,decode:boolean = false)=>{
   return songName.replace(/_q_/g,"?").replace(/_c_/g,":").replace(/_d_/g,"\"").replace(/_a_/g,"*").replace(/_e_/g,"!").replace(/_qo_/g,"'").replace(/_y_/g,"\\").replace(/_s_/g,"/");
 }
 
-var folder = "D:\\bpis\\ScoresRepo\\IIDX-ScoresRepo\\" + diff + "\\kaiden\\";
+var folder = "C:\\Users\\koro1\\Documents\\GitHub\\IIDX-ScoresRepo\\" + diff + "\\";
 var outputDir = "..\\res\\" + diff + "\\"
 
 const openFile = async(path:string)=>{
@@ -54,10 +54,16 @@ const init = async()=>{
   const res = await parser();
   Object.keys(res).map(async(song:string)=>{
     const rank = res[song];
-    if(songRegExp.test(song)){
-      console.log(song);
-    }
-    await write(outputDir + nameReplacer(song) + ".json",JSON.stringify(rank.sort((a,b)=>b -a)));
+    let songName = song;
+    if(songName === "Idola [A]") songName = "Idola[A]";
+    if(songName === "Blind Justice ～Torn souls, Hurt Faiths ～[A]") songName = "Blind Justice ～Torn souls， Hurt Faiths ～[A]";
+    if(songName === "COLOSSEUM [A]") songName = "COLOSSEUM[A]";
+    if(songName === "Erosion Mark  [A]") songName = "Erosion Mark[A]";
+    if(songName === "ROCK女 feat. 大山愛未, Ken[A]") songName = "ROCK女 feat. 大山愛未， Ken[A]";
+
+    console.log(song);
+    let finalSongName = nameReplacer(songName);
+    await write(outputDir + finalSongName + ".json",JSON.stringify(rank.sort((a,b)=>b -a)));
   })
 }
 
@@ -96,12 +102,11 @@ const rs = async ()=>{
   const maxes = await readMax();
   console.log(files);
   let res:{
-    title:string,difficulty:number,wr:number,avg:number,playerSum:number
+    title:string,difficulty:number,wr:number,avg:number,playerSum:number,
+    BPI100?:number,BPI90?:number,BPI80?:number,BPI70?:number,BPI60?:number,BPI50?:number,
+    BPI40?:number,BPI30?:number,BPI20?:number,BPI10?:number,max?:number
   }[] = [];
-/*
-BPI100:number,BPI90:number,BPI80:number,BPI70:number,BPI60:number,BPI50:number,
-    BPI40:number,BPI30:number,BPI20:number,BPI10:number,max:number
-*/
+
   for(let i =0; i < files.length; ++i){
     const f = files[i];
     let songName = f.replace(".json","");
@@ -131,14 +136,9 @@ BPI100:number,BPI90:number,BPI80:number,BPI70:number,BPI60:number,BPI50:number,
     const _diff = indexOf("H") ? 3 : indexOf("A") ? 4 : 10;
     res.push({title:nameReplacer(songName,true),difficulty:_diff,wr:wrLogic(),
       avg:Math.floor(sum / m.length),
-      playerSum:m.length});
-      /*
-
-        BPI100:mGet(1),BPI90:mGet(2),BPI80:mGet(5),BPI70:mGet(11),BPI60:mGet(23),BPI50:mGet(51),
-        BPI40:mGet(113),BPI30:mGet(249),BPI20:mGet(547),BPI10:mGet(1203),
-
-      ,max:max
-      */
+      BPI100:mGet(1),BPI90:mGet(2),BPI80:mGet(5),BPI70:mGet(11),BPI60:mGet(23),BPI50:mGet(51),
+      BPI40:mGet(113),BPI30:mGet(249),BPI20:mGet(547),BPI10:mGet(1203),
+      max:max,playerSum:m.length});
     }
     await write("..\\release\\" + "release"+ diff +".json",JSON.stringify(res));
     //console.log(files);
